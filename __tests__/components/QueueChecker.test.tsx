@@ -23,7 +23,9 @@ const mockQueueInfo: QueueInfo = {
     'Book Special Entry Darshan tickets in advance',
     'Avoid visiting on weekends and festival days',
   ],
-  current_date: '2026-04-30',
+  query_date: '2026-04-30',
+  is_festival_day: false,
+  season: 'summer',
 };
 
 describe('QueueChecker', () => {

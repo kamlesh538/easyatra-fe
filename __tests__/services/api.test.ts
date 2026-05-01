@@ -77,7 +77,7 @@ describe('API Service', () => {
         end_date: tripData.end_date,
         budget: tripData.budget,
         travelers: tripData.travelers,
-        itinerary: [],
+        itinerary_days: [],
         notifications: [],
       };
       mockFetch.mockResolvedValue(createMockResponse(mockTrip));
@@ -110,7 +110,7 @@ describe('API Service', () => {
         end_date: '2026-07-05',
         budget: 30000,
         travelers: 1,
-        itinerary: [],
+        itinerary_days: [],
         notifications: [],
       };
       mockFetch.mockResolvedValue(createMockResponse(mockTrip));
@@ -161,18 +161,20 @@ describe('API Service', () => {
     it('fetches queue time for a place', async () => {
       const mockQueueInfo: QueueInfo = {
         place: 'Tirupati Balaji',
+        query_date: '2026-04-30',
         estimated_wait_minutes: 120,
         crowd_level: 'very_high',
         best_time: '4:00 AM - 6:00 AM',
         tips: ['Arrive early'],
-        current_date: '2026-04-30',
+        is_festival_day: false,
+        season: 'summer',
       };
       mockFetch.mockResolvedValue(createMockResponse(mockQueueInfo));
 
       const result = await api.getQueueTime('Tirupati Balaji', '2026-04-30');
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringMatching(/\/queue-time\?place=Tirupati.Balaji&date=2026-04-30/),
+        expect.stringMatching(/\/places\/.*\/queue\?date=2026-04-30/),
         expect.any(Object)
       );
       expect(result.place).toBe('Tirupati Balaji');
@@ -182,18 +184,20 @@ describe('API Service', () => {
     it('fetches queue time without date (uses today)', async () => {
       const mockQueueInfo: QueueInfo = {
         place: 'Kashi Vishwanath',
+        query_date: '2026-04-30',
         estimated_wait_minutes: 45,
         crowd_level: 'moderate',
         best_time: '5:00 AM',
         tips: [],
-        current_date: '2026-04-30',
+        is_festival_day: false,
+        season: 'summer',
       };
       mockFetch.mockResolvedValue(createMockResponse(mockQueueInfo));
 
       const result = await api.getQueueTime('Kashi Vishwanath');
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringMatching(/place=Kashi.Vishwanath/),
+        expect.stringMatching(/\/places\/.*Kashi.*\/queue/),
         expect.any(Object)
       );
       expect(result.crowd_level).toBe('moderate');

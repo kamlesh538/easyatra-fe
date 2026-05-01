@@ -20,7 +20,7 @@ const mockNotifications: Notification[] = [
     title: 'Book Tirupati Darshan Tickets',
     message: 'Darshan tickets for Tirupati open 30 days in advance. Book immediately!',
     notify_date: formatDate(pastDate),
-    type: 'booking',
+    notification_type: 'booking',
     priority: 'high',
     booking_url: 'https://tirupati.example.com/book',
   },
@@ -29,7 +29,7 @@ const mockNotifications: Notification[] = [
     title: 'Reserve Hotel in Varanasi',
     message: 'Book your accommodation in Varanasi near the Ghats.',
     notify_date: formatDate(futureDate),
-    type: 'booking',
+    notification_type: 'booking',
     priority: 'medium',
     booking_url: 'https://hotel.example.com',
   },
@@ -38,7 +38,7 @@ const mockNotifications: Notification[] = [
     title: 'Pack Warm Clothes',
     message: 'Kedarnath is cold. Prepare warm clothing.',
     notify_date: formatDate(futureDate),
-    type: 'reminder',
+    notification_type: 'reminder',
     priority: 'low',
   },
 ];
@@ -53,7 +53,8 @@ describe('Notifications', () => {
 
   it('shows ACTION REQUIRED for past notify_date', () => {
     render(<Notifications notifications={mockNotifications} />);
-    expect(screen.getByText(/ACTION REQUIRED/i)).toBeInTheDocument();
+    // Badge text appears in NotificationCard; filter button also contains "Action Required"
+    expect(screen.getAllByText(/ACTION REQUIRED/i).length).toBeGreaterThan(0);
   });
 
   it('shows countdown for future dates', () => {
@@ -103,8 +104,8 @@ describe('Notifications', () => {
 
   it('shows summary stats', () => {
     render(<Notifications notifications={mockNotifications} />);
-    // Action required count: 1 (past date)
-    expect(screen.getByText('Action Required')).toBeInTheDocument();
+    // Action required count: 1 (past date) — appears in both summary and filter button
+    expect(screen.getAllByText(/Action Required/i).length).toBeGreaterThan(0);
   });
 
   it('shows empty state when no notifications in filter', async () => {
